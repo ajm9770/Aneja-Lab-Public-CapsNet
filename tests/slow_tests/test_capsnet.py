@@ -9,24 +9,21 @@
 
 # Project imports:
 
-from data_loader import AdniDataset, make_image_list
-from capsnet_model import CapsNet3D
-from loss_functions import DiceLoss
+from capsnet.engine.data_loader import AdniDataset, make_image_list
+from capsnet.model.capsnet import CapsNet3D
+from capsnet.engine.loss_functions import DiceLoss
 
 # System imports:
 
 import torch
 from torch.utils.data import DataLoader
-from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 import os
 from os.path import join
-from shutil import copyfile
 from datetime import datetime
-from tqdm import tqdm, trange
+from tqdm import tqdm
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from dipy.io.image import save_nifti
 
 
@@ -347,7 +344,7 @@ class TestCapsNet3D:
         )
 
         os.system(command)
-        print(f">>>   S3 backup done   <<<")
+        print(">>>   S3 backup done   <<<")
 
 
 # ------------------------------------------ Run TrainUNet3D Instance ------------------------------------------

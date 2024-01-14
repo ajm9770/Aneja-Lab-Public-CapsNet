@@ -1,0 +1,24 @@
+[project]
+name = "capsnet"
+version = "0.0.1"
+authors = [
+  { name="Arman Avesta", email="test@test.com"},
+  { name="Avi Mahajan", email="author@example.com" },
+]
+description = "3D capsule networks for segmenting brain structures"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/Aneja-Lab-Yale/Aneja-Lab-Public-CapsNet"
+Issues = "https://github.com/Aneja-Lab-Yale/Aneja-Lab-Public-CapsNet/issues"
+
+[tool.ruff]
+extend-include = ["*.ipynb"]
+
+# Assume Python 3.8
+target-version = "py311"

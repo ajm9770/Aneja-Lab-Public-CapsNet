@@ -1,5 +1,5 @@
 # CapsNet Project
-# This class trains the 3D UNet.
+# This class trains the 3D capsule network.
 # Aneja Lab | Yale School of Medicine
 # Developed by Arman Avesta, MD
 # Created (4/10/21)
@@ -9,9 +9,9 @@
 
 # Project imports:
 
-from data_loader import AdniDataset, make_image_list
-from unet_model import UNet3D
-from loss_functions import DiceLoss, DiceBCELoss, IoULoss
+from capsnet.engine.data_loader import AdniDataset, make_image_list
+from capsnet.model.capsnet import CapsNet3D
+from capsnet.engine.loss_functions import DiceLoss
 
 # System imports:
 
@@ -21,18 +21,16 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 import os
 from os.path import join
-from shutil import copyfile
 from datetime import datetime
-from tqdm import tqdm, trange
+from tqdm import trange
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
 
 # ----------------------------------------------- TrainUNet3D class ------------------------------------------
 
 
-class TrainUNet3D:
+class TrainCapsNet3D:
     def __init__(self, saved_model_path=None):
         self.start_time = datetime.now()
 
@@ -41,25 +39,25 @@ class TrainUNet3D:
         ###########################################################
 
         # Set segmentation target:
-        self.output_structure = "right thalamus"
+        self.output_structure = "right hippocampus"
         # Set FreeSurfer code for segmentation target:
         # to find the code, open any aparc+aseg.mgz in FreeView and change color coding to lookup table
-        self.output_code = 49
+        self.output_code = 53
 
         # Set the size of the cropped volume:
         # if this is set to 100, the center of the volumed is cropped with the size of 100 x 100 x 100.
         # if this is set to (100, 64, 64), the center of the volume is cropped with size of (100 x 64 x 64).
         # note that 100, 64 and 64 here respectively represent left-right, posterior-anterior,
         # and inferior-superior dimensions, i.e. standard radiology coordinate system ('L','A','S').
-        self.crop = 64
+        self.crop = (64, 64, 64)
         # Set cropshift:
         # if the target structure is right hippocampus, the crop box may be shifted to right by 20 pixels,
         # anterior by 5 pixels, and inferior by 20 pixels --> cropshift = (-20, 5, -20);
         # note that crop and cropshift here are set here using standard radiology system ('L','A','S'):
-        self.cropshift = (-10, 0, 4)
+        self.cropshift = (-20, 0, -20)
 
-        # Set model: UNet3D
-        self.model = UNet3D()
+        # Set model:
+        self.model = CapsNet3D()
         # Set initial learning rate:
         self.lr_initial = 0.002
         # Set optimizer: default is Adam optimizer:
@@ -87,13 +85,15 @@ class TrainUNet3D:
         )
 
         # Set loss function: options are DiceLoss, DiceBCELoss, and IoULoss:
-        self.criterion = DiceLoss()
-        self.criterion_individual_losses = DiceLoss(reduction="none")  # for validation
+        self.criterion = DiceLoss(conversion="margin", low=0.1, high=0.9)
+        self.criterion_individual_losses = DiceLoss(
+            conversion="threshold", reduction="none"
+        )  # for validation
 
         # .......................................................................................................
 
         # Set number of training epochs:
-        self.n_epochs = 100
+        self.n_epochs = 50
 
         # Number of training cases in each miniepoch:
         """
@@ -119,7 +119,7 @@ class TrainUNet3D:
         # Folder that contains datasets csv files:
         self.datasets_folder = "data/datasets"
         # Folder to save model results:
-        self.results_folder = "data/results/unet_rthal_1.1.22"
+        self.results_folder = "data/results/temp"
 
         # csv file containing list of inputs for training:
         self.train_inputs_csv = "train_inputs.csv"
@@ -129,9 +129,6 @@ class TrainUNet3D:
         self.valid_inputs_csv = "valid_inputs.csv"
         # csv file containing list of outputs for validation:
         self.valid_outputs_csv = "valid_outputs.csv"
-        # Folder within results folder to save nifti files:
-        # (cropped inputs, predictions, and ground-truth images)
-        self.niftis_folder = "niftis"
 
         # Determine if backup to S3 should be done:
         self.s3backup = True
@@ -434,7 +431,7 @@ class TrainUNet3D:
             - validation_losses.csv (columns: validation epochs (after each training miniepoch),
                                     rows: validation examples)
 
-            These files are saved in the directory set by self.resulst_folder
+            These files are saved in the directory set by self.rerulst_folder
         """
         # Remove previous summary stats:
         self.train_epoch_losses.drop(index="averages", errors="ignore", inplace=True)
@@ -524,7 +521,7 @@ class TrainUNet3D:
         )
 
 
-# ------------------------------------------ Run TrainUNet3D Instance ------------------------------------------
+# ------------------------------------------- Run TrainCapsNet3D Instance -------------------------------------------
 
 if __name__ == "__main__":
-    utrain = TrainUNet3D()
+    capstrain = TrainCapsNet3D()

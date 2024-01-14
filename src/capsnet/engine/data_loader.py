@@ -13,7 +13,7 @@ from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 import os
 import pandas as pd
-from dipy.io.image import load_nifti, save_nifti
+from dipy.io.image import load_nifti
 import numpy as np
 
 

@@ -9,9 +9,9 @@
 
 # Project imports:
 
-from data_loader import AdniDataset, make_image_list
-from unet_model import UNet3D
-from loss_functions import DiceLoss, DiceBCELoss, IoULoss
+from capsnet.engine.data_loader import AdniDataset, make_image_list
+from capsnet.model.unet import UNet3D
+from capsnet.engine.loss_functions import DiceLoss
 
 # System imports:
 
@@ -331,7 +331,7 @@ class TestUNet3D:
         )
 
         os.system(command)
-        print(f">>>   S3 backup done   <<<")
+        print(">>>   S3 backup done   <<<")
 
 
 # ------------------------------------------ Run TrainUNet3D Instance ------------------------------------------

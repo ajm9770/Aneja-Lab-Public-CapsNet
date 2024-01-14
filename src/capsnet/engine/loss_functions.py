@@ -72,8 +72,9 @@ class DiceLoss(nn.Module):
             )
         elif self.reduction == "none":
             batch_size = preds.shape[0]
-            preds, targets = preds.reshape(batch_size, -1), targets.reshape(
-                batch_size, -1
+            preds, targets = (
+                preds.reshape(batch_size, -1),
+                targets.reshape(batch_size, -1),
             )
             intersection = (preds * targets).sum(axis=1)
             dice = (2 * intersection + self.eps) / (
@@ -130,8 +131,9 @@ class DiceBCELoss(nn.Module):
 
         elif self.reduction == "none":
             batch_size = preds.shape[0]
-            preds, targets = preds.reshape(batch_size, -1), targets.reshape(
-                batch_size, -1
+            preds, targets = (
+                preds.reshape(batch_size, -1),
+                targets.reshape(batch_size, -1),
             )
             intersection = (preds * targets).sum(axis=1)
             dice_loss = 1 - (2 * intersection + self.eps) / (
@@ -163,8 +165,9 @@ class IoULoss(nn.Module):
 
         elif self.reduction == "none":
             batch_size = preds.shape[0]
-            preds, targets = preds.reshape(batch_size, -1), targets.reshape(
-                batch_size, -1
+            preds, targets = (
+                preds.reshape(batch_size, -1),
+                targets.reshape(batch_size, -1),
             )
             intersection = (preds * targets).sum(axis=1)
             total = (preds + targets).sum(axis=1)
@@ -213,8 +216,9 @@ class TverskyLoss(nn.Module):
 
         elif self.reduction == "none":
             batch_size = preds.shape[0]
-            preds, targets = preds.reshape(batch_size, -1), targets.reshape(
-                batch_size, -1
+            preds, targets = (
+                preds.reshape(batch_size, -1),
+                targets.reshape(batch_size, -1),
             )
             TP = (preds * targets).sum(axis=1)  # true positives
             FP = ((1 - targets) * preds).sum(axis=1)  # false positives
@@ -261,8 +265,9 @@ class ReconLoss(nn.Module):
 
         elif self.reduction == "none":
             batch_size = inputs.shape[0]
-            inputs, recons = inputs.reshape(batch_size, -1), recons.reshape(
-                batch_size, -1
+            inputs, recons = (
+                inputs.reshape(batch_size, -1),
+                recons.reshape(batch_size, -1),
             )
             recon_loss = self.recon_loss_intact(inputs, recons).mean(axis=1)
 
