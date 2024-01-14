@@ -19,6 +19,7 @@ import numpy as np
 
 # ----------------------------------------------- AdniDataset class ------------------------------------------------
 
+
 class AdniDataset(Dataset):
     """
     This class generates input/target paris for pytorch data loader:
@@ -31,11 +32,16 @@ class AdniDataset(Dataset):
     More info: http://adni.loni.usc.edu/
     """
 
-    def __init__(self, image_list, mask_list, maskcode,
-                 crop=None,
-                 cropshift=(0, 0, 0),
-                 transforms=None,
-                 testmode=False):
+    def __init__(
+        self,
+        image_list,
+        mask_list,
+        maskcode,
+        crop=None,
+        cropshift=(0, 0, 0),
+        transforms=None,
+        testmode=False,
+    ):
         """
         Inputs:
             - image_list: list of paths (type: strings list) to input images (e.g. brain MRI).
@@ -81,7 +87,11 @@ class AdniDataset(Dataset):
 
         # if crop/cropshift are int e.g. 64 --> turn them into (64, 64, 64)
         self.crop = (crop, crop, crop) if isinstance(crop, int) else crop
-        self.cropshift = (cropshift, cropshift, cropshift) if isinstance(cropshift, int) else cropshift
+        self.cropshift = (
+            (cropshift, cropshift, cropshift)
+            if isinstance(cropshift, int)
+            else cropshift
+        )
         self.transforms = transforms
         self.testmode = testmode
 
@@ -89,7 +99,6 @@ class AdniDataset(Dataset):
 
     def __len__(self):
         return len(self.image_list)
-
 
     def __getitem__(self, index):
         image_path = self.image_list[index]
@@ -115,8 +124,8 @@ class AdniDataset(Dataset):
         # Extract binary mask from aparc+aseg.mgz:
         mask = self.generate_binary_mask(mask)
         # Add channel dimension --> change dtype to float32
-        image = np.expand_dims(image, axis=0).astype('float32')
-        mask = np.expand_dims(mask, axis=0).astype('float32')
+        image = np.expand_dims(image, axis=0).astype("float32")
+        mask = np.expand_dims(mask, axis=0).astype("float32")
 
         if self.testmode:
             return image, mask, shape, crop_coords, affine, mask_path
@@ -126,15 +135,33 @@ class AdniDataset(Dataset):
     # ........................................................................................................
 
     def crop_image(self, image):
-        (x, y, z) = image.shape  # this works if inputs & outputs are in ('L','A','S') coordinate system
+        (
+            x,
+            y,
+            z,
+        ) = (
+            image.shape
+        )  # this works if inputs & outputs are in ('L','A','S') coordinate system
         xcrop, ycrop, zcrop = self.crop[0], self.crop[1], self.crop[2]
-        xshift, yshift, zshift = self.cropshift[0], self.cropshift[1], self.cropshift[2]  # ('L','A','S') system
+        xshift, yshift, zshift = (
+            self.cropshift[0],
+            self.cropshift[1],
+            self.cropshift[2],
+        )  # ('L','A','S') system
 
         xmid, ymid, zmid = x // 2, y // 2, z // 2
         xdiff, ydiff, zdiff = xcrop // 2, ycrop // 2, zcrop // 2
 
-        xstart, ystart, zstart = xmid - xdiff + xshift, ymid - ydiff + yshift, zmid - zdiff + zshift
-        xstop, ystop, zstop = xmid + xdiff + xshift, ymid + ydiff + yshift, zmid + zdiff + zshift
+        xstart, ystart, zstart = (
+            xmid - xdiff + xshift,
+            ymid - ydiff + yshift,
+            zmid - zdiff + zshift,
+        )
+        xstop, ystop, zstop = (
+            xmid + xdiff + xshift,
+            ymid + ydiff + yshift,
+            zmid + zdiff + zshift,
+        )
 
         if xstart < 0:
             xstop -= xstart
@@ -154,12 +181,25 @@ class AdniDataset(Dataset):
         if zstop > z:
             zstart -= zstop - z
             zstop = z
-        assert (xstart >= 0) and (ystart >= 0) and (zstart >= 0) and (xstop <= x) and (ystop <= y) and (zstop <= z)
+        assert (
+            (xstart >= 0)
+            and (ystart >= 0)
+            and (zstart >= 0)
+            and (xstop <= x)
+            and (ystop <= y)
+            and (zstop <= z)
+        )
 
-        cropped_image = image[xstart:xstop, ystart:ystop, zstart:zstop]     # ('L','A','S') coordinate system
-        crop_coords = np.array([[xstart, xstop],                            # ('L','A','S') coordinate system
-                                [ystart, ystop],
-                                [zstart, zstop]])
+        cropped_image = image[
+            xstart:xstop, ystart:ystop, zstart:zstop
+        ]  # ('L','A','S') coordinate system
+        crop_coords = np.array(
+            [
+                [xstart, xstop],  # ('L','A','S') coordinate system
+                [ystart, ystop],
+                [zstart, zstop],
+            ]
+        )
 
         return cropped_image, crop_coords
 
@@ -171,14 +211,13 @@ class AdniDataset(Dataset):
         return binary_mask
 
 
-
 # ------------------------------------------------- Helper functions ------------------ooo-----------------------------
+
 
 def make_image_list(path_to_images_csv):
     images_df = pd.read_csv(path_to_images_csv, header=None)
     images_list = list(images_df.iloc[:, 0])
     return images_list
-
 
 
 # ------------------------------------------- AdniDataset code  testing -----------------------------------------------
@@ -191,9 +230,9 @@ if __name__ == "__main__":
 
     #######################################################
 
-    project_root = '/Users/arman/projects/capsnet'
-    images_csv = 'data/datasets_local/train_inputs.csv'
-    masks_csv = 'data/datasets_local/train_outputs.csv'
+    project_root = "/Users/arman/projects/capsnet"
+    images_csv = "data/datasets_local/train_inputs.csv"
+    masks_csv = "data/datasets_local/train_outputs.csv"
 
     images_path = os.path.join(project_root, images_csv)
     masks_path = os.path.join(project_root, masks_csv)
@@ -211,12 +250,22 @@ if __name__ == "__main__":
         itr = iter(dataloader)
         images, masks, shapes, crops_coords, affines, masks_paths = next(itr)
 
-    print(f'images --> shape: {images.shape}; data type: {images.dtype}; min: {images.min()}; max: {images.max()}')
-    print(f'masks --> shape: {masks.shape}; data type: {masks.dtype}; unique values: {masks.unique()}')
-    print(f'affines --> shape: {affines.shape}; data type: {affines.dtype}; values: \n{affines}')
-    print(f'crops_coords --> shape: {crops_coords.shape}; data type: {crops_coords.dtype}; values: \n{crops_coords}')
-    print(f'shapes --> shape: {shapes.shape}; data type: {shapes.dtype}; values: \n{shapes}')
-    print(f'paths --> length: {len(masks_paths)}; values: {masks_paths}')
+    print(
+        f"images --> shape: {images.shape}; data type: {images.dtype}; min: {images.min()}; max: {images.max()}"
+    )
+    print(
+        f"masks --> shape: {masks.shape}; data type: {masks.dtype}; unique values: {masks.unique()}"
+    )
+    print(
+        f"affines --> shape: {affines.shape}; data type: {affines.dtype}; values: \n{affines}"
+    )
+    print(
+        f"crops_coords --> shape: {crops_coords.shape}; data type: {crops_coords.dtype}; values: \n{crops_coords}"
+    )
+    print(
+        f"shapes --> shape: {shapes.shape}; data type: {shapes.dtype}; values: \n{shapes}"
+    )
+    print(f"paths --> length: {len(masks_paths)}; values: {masks_paths}")
 
     imshow(images)
     imshow(masks)
