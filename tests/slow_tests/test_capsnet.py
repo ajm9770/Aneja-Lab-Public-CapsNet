@@ -1,9 +1,9 @@
 # CapsNet Project
 # This class tests the 3D CapsNet.
 # Aneja Lab | Yale School of Medicine
-# Developed by Arman Avesta, MD
+# Tests created by Avi Mahajan
 # Created (5/19/21)
-# Updated (3/15/22)
+# Updated (10/24/23)
 
 # -------------------------------------------------- Imports --------------------------------------------------
 
