@@ -1,7 +1,7 @@
 # CapsNet Project
 # This module contains the classes that define the 3D U-Net model and its components.
 # Aneja Lab | Yale School of Medicine
-# Developed by Arman Avesta, MD
+# Developed by Avi Mahajan
 # Created (3/30/21)
 # Updated (3/15/22)
 
