@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Comparison</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        h2 { color: #333; }
+    </style>
+</head>
+<body>
+    <h1>Machine Learning Model Comparison</h1>
+
+    <!-- Model Names -->
+    <h2>{{ model1.name }} vs. {{ model2.name }}</h2>
+
+    <!-- Metric Comparison Table -->
+    <h3>Performance Metrics</h3>
+    <table>
+        <tr>
+            <th>Metric</th>
+            <th>{{ model1.name }}</th>
+            <th>{{ model2.name }}</th>
+        </tr>
+        <tr>
+            <td>Accuracy</td>
+            <td>{{ model1.metrics.accuracy }}</td>
+            <td>{{ model2.metrics.accuracy }}</td>
+        </tr>
+        <tr>
+            <td>Precision</td>
+            <td>{{ model1.metrics.precision }}</td>
+            <td>{{ model2.metrics.precision }}</td>
+        </tr>
+        <tr>
+            <td>Recall</td>
+            <td>{{ model1.metrics.recall }}</td>
+            <td>{{ model2.metrics.recall }}</td>
+        </tr>
+        <tr>
+            <td>F1 Score</td>
+            <td>{{ model1.metrics.f1_score }}</td>
+            <td>{{ model2.metrics.f1_score }}</td>
+        </tr>
+    </table>
+
+    <!-- Example Predictions -->
+    <h3>Example Predictions</h3>
+    <table>
+        <tr>
+            <th>Example</th>
+            <th>{{ model1.name }} Prediction</th>
+            <th>{{ model2.name }} Prediction</th>
+            <th>Actual</th>
+        </tr>
+        {% for example in predictions %}
+        <tr>
+            <td>{{ example.input }}</td>
+            <td>{{ example.model1_prediction }}</td>
+            <td>{{ example.model2_prediction }}</td>
+            <td>{{ example.actual }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>
