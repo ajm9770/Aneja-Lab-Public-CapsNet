@@ -1,6 +1,6 @@
 # Aneja Lab | Yale School of Medicine
 # This file contains classes that define 3D capsule network with dynamic routing.
-# Developed by Arman Avesta, MD
+# Developed by Avi Mahajan
 # Created (8/23/21)
 # Updated (3/15/22)
 
