@@ -3,7 +3,7 @@
 # Aneja Lab | Yale School of Medicine
 # Developed by Arman Avesta, MD
 # Created (4/10/21)
-# Updated (3/15/22)
+# Updated (11/4/23)
 
 # -------------------------------------------------- Imports --------------------------------------------------
 
@@ -25,6 +25,7 @@ from datetime import datetime
 from tqdm import trange
 import numpy as np
 import pandas as pd
+from pathlib import Path
 
 
 # ----------------------------------------------- TrainUNet3D class ------------------------------------------
@@ -113,7 +114,7 @@ class TrainUNet3D:
         self.valid_transforms = False
 
         # Set project root path:
-        self.project_root = "/home/arman_avesta/capsnet"
+        self.project_root = Path.home() /  "src/capsnet"
         # Folder that contains datasets csv files:
         self.datasets_folder = "data/datasets"
         # Folder to save model results:

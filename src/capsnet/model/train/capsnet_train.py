@@ -25,6 +25,7 @@ from datetime import datetime
 from tqdm import trange
 import numpy as np
 import pandas as pd
+from pathlib import Path
 
 
 # ----------------------------------------------- TrainUNet3D class ------------------------------------------
@@ -115,7 +116,7 @@ class TrainCapsNet3D:
         self.valid_transforms = False
 
         # Set project root path:
-        self.project_root = "/home/arman_avesta/capsnet"
+        self.project_root = Path.home() /  "src/capsnet"
         # Folder that contains datasets csv files:
         self.datasets_folder = "data/datasets"
         # Folder to save model results:
@@ -505,7 +506,6 @@ class TrainCapsNet3D:
     def backup_to_s3(self, verbose=False):
         """
         This method backs up the results to S3 bucket.
-        It runs in the background and doesn't slow down training.
         """
         ec2_results_folder = join(self.project_root, self.results_folder)
 

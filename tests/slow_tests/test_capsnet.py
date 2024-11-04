@@ -25,6 +25,7 @@ from tqdm import tqdm
 import numpy as np
 import pandas as pd
 from dipy.io.image import save_nifti
+from pathlib import Path
 
 
 # ---------------------------------------------- TestUNet3D class ----------------------------------------------
@@ -67,12 +68,12 @@ class TestCapsNet3D:
         self.criterion = DiceLoss(conversion="threshold", reduction="none")
 
         # Project root:
-        self.project_root = "/home/arman_avesta/capsnet"
+        self.project_root = Path().home() / "src/capsnet"
 
         # Saved model paths:
         # change project_root and saved_model_folder to match where you save the model
         self.saved_model_folder = "data/results/temp"
-        self.saved_model_filename = "saved_model.pth.tar"
+        self.saved_model_filename = "saved_capsnet.pth.tar"
 
         # Testing dataset paths:
         self.datasets_folder = "data/datasets"
@@ -101,10 +102,10 @@ class TestCapsNet3D:
         # (cropped inputs, model predictions, and ground truth together with individual scan losses)
         self.niftis_folder = "data/results/temp/niftis"
         # csv file to which testing hyperparameters and results will be saved:
-        self.hyperparameters_file = "testing_hyperparameters.csv"
+        self.hyperparameters_file = "capsnet_hyperparameters.csv"
 
         # Determine if backup to S3 should be done:
-        self.s3backup = True
+        self.s3backup = False
         # S3 bucket backup folder for results:
         self.s3_niftis_folder = "HIDDEN FOR PUBLIC CODE"
 
@@ -220,7 +221,7 @@ class TestCapsNet3D:
                 # .................................................................................................
                 """
                 Example of a path:
-                /home/arman_avesta/capsnet/data/images/033_S_0725/2008-08-06_13_54_42.0/aparc+aseg_brainbox.mgz
+                capsnet/data/images/033_S_0725/2008-08-06_13_54_42.0/aparc+aseg_brainbox.mgz
                 """
                 path_components = path.split("/")
                 subject, scan = path_components[-3], path_components[-2]
