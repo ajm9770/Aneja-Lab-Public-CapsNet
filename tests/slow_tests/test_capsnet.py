@@ -244,7 +244,7 @@ class TestCapsNet3D:
                 self.losses = pd.concat([self.losses, scan_loss])
 
             # .....................................................................................................
-
+            self.losses.to_csv(join(self.project_root, self.niftis_folder, ))
             data_batches.set_description(
                 f'Testing (loss: {self.losses["loss"].mean(): .3f}'
             )

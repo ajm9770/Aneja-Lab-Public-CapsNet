@@ -2,7 +2,9 @@ import torch
 import torch.nn as nn
 from pathlib import Path
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from capsnet.engine.loss_functions import DiceLoss, DiceBCELoss, DiceReconLoss
 from torchvision import transforms
+import pandas as pd
 
 # Example: Dummy model class (replace with your actual model class if necessary)
 class MyModel(nn.Module):
@@ -49,14 +51,19 @@ def evaluate_model(model, test_loader):
             _, predicted = torch.max(outputs, 1)
             all_preds.extend(predicted.numpy())
             all_labels.extend(labels.numpy())
+    losses = pd.load_csv(
+            Path().home() / 'src/capsnet/data/results/temp/niftis' / "scans_losses.csv"
+    )
     
     # Calculate metrics
+    mean_loss = losses['loss'].mean()
     accuracy = accuracy_score(all_labels, all_preds)
     precision = precision_score(all_labels, all_preds, average='weighted')
     recall = recall_score(all_labels, all_preds, average='weighted')
     f1 = f1_score(all_labels, all_preds, average='weighted')
     
     return {
+        'mean loss': mean_loss,
         'accuracy': accuracy,
         'precision': precision,
         'recall': recall,
